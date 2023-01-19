@@ -52,7 +52,7 @@ pickWifi() {
 
 refreshIp() {
 		sleep 1
-		dhcpcd -n -4 -6
+		dhcpcd -n -4 -6 $iface
 
 		while sleep 1; do
 				info "Waiting for IP..."
