@@ -23,6 +23,12 @@ main() {
 						refreshIp
 						;;
 
+				Office2)
+						wpa_cli select_network 5
+						wpa_cli reassociate
+						refreshIp
+						;;
+
 				Other)
 						read -r bssid frq level flags ssid <<< $(pickWifi)
 						info "Picked $ssid at $bssid"
@@ -35,7 +41,7 @@ main() {
 						if [[ $flags =~ PSK ]]; then
 								echo "PSK?"
 								wpa_cli set_network $nid key_mgmt "WPA-PSK WPA-EAP"
-								wpa_cli set_network $nid psk "\"$(fzf --prompt="psk? ")\""
+								wpa_cli set_network $nid psk "$(fzf --disabled --prompt="psk? ")"
 						else
 								wpa_cli set_network $nid key_mgmt NONE
 						fi
@@ -45,6 +51,10 @@ main() {
 						# wpa_cli reassociate
 						refreshIp
 						;;
+
+				Reassoc*)
+						wpa_cli reassociate
+						;;
 		esac
 }
 
@@ -53,7 +63,9 @@ pickMode() {
 Home
 Phone
 Office
+Office2
 Other
+Reassociate
 EOF
 }
 
