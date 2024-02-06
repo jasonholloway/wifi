@@ -4,7 +4,7 @@ set -e
 iface=wlp0s20f3
 
 main() {
-		case "$(pickMode)" in
+		case "$(pickMode $1)" in
 				Home)
 						wpa_cli select_network 0
 						wpa_cli reassociate
@@ -59,7 +59,7 @@ main() {
 }
 
 pickMode() {
-		fzf <<EOF
+		fzf -q$1 -1 <<EOF
 Home
 Phone
 Office
