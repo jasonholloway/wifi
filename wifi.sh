@@ -17,14 +17,20 @@ main() {
 						refreshIp
 						;;
 
-				Office)
-						wpa_cli select_network 2
-						wpa_cli reassociate
-						refreshIp
-						;;
+				# Office)
+				# 		wpa_cli select_network 2
+				# 		wpa_cli reassociate
+				# 		refreshIp
+				# 		;;
 
-				Office2)
-						wpa_cli select_network 5
+				# Office2)
+				# 		wpa_cli select_network 5
+				# 		wpa_cli reassociate
+				# 		refreshIp
+				# 		;;
+
+				111Piccadilly)
+						wpa_cli select_network 2
 						wpa_cli reassociate
 						refreshIp
 						;;
@@ -62,8 +68,7 @@ pickMode() {
 		fzf -q$1 -1 <<EOF
 Home
 Phone
-Office
-Office2
+111Piccadilly
 Other
 Reassociate
 EOF
