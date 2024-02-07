@@ -65,7 +65,7 @@ main() {
 }
 
 pickMode() {
-		fzf -q$1 -1 <<EOF
+		fzf $([[ ! -z $1 ]] && echo "-q$1") -1 <<EOF
 Home
 Phone
 111Piccadilly
