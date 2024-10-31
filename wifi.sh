@@ -11,24 +11,6 @@ main() {
 						refreshIp
 						;;
 
-				Phone)
-						wpa_cli select_network 1
-						wpa_cli reassociate
-						refreshIp
-						;;
-
-				# Office)
-				# 		wpa_cli select_network 2
-				# 		wpa_cli reassociate
-				# 		refreshIp
-				# 		;;
-
-				# Office2)
-				# 		wpa_cli select_network 5
-				# 		wpa_cli reassociate
-				# 		refreshIp
-				# 		;;
-
 				111Piccadilly)
 						wpa_cli select_network 2
 						wpa_cli reassociate
@@ -38,6 +20,7 @@ main() {
 				Other)
 						read -r bssid frq level flags ssid <<< $(pickWifi)
 						info "Picked $ssid at $bssid"
+						info "Flags: $flags"
 
 						nid=4
 
@@ -45,16 +28,16 @@ main() {
 						wpa_cli set_network $nid bssid "$bssid"
 
 						if [[ $flags =~ PSK ]]; then
-								echo "PSK?"
+								psk=$(getPass $ssid)
+								
 								wpa_cli set_network $nid key_mgmt "WPA-PSK WPA-EAP"
-								wpa_cli set_network $nid psk "$(fzf --disabled --prompt="psk? ")"
+								wpa_cli set_network $nid psk '"'$psk'"'
 						else
 								wpa_cli set_network $nid key_mgmt NONE
 						fi
 
 						wpa_cli select_network $nid
 						sleep 1
-						# wpa_cli reassociate
 						refreshIp
 						;;
 
@@ -64,11 +47,29 @@ main() {
 		esac
 }
 
+getPass() {
+		local ssid=$1
+		local pskFile=~/share/wifi/psks
+
+		[[ -e $pskFile ]] && {
+				found=$(awk -F, '$1 == "'$ssid'" { print $2 }' $pskFile)
+
+				[[ ! -z $found ]] && {
+						echo $found
+						return
+				}
+		}
+
+		echo "PSK?" >$(tty)
+		read psk <$(tty)
+		echo psk
+
+		echo "${ssid},${psk}" >> $pskFile
+}
+
 pickMode() {
 		fzf $([[ ! -z $1 ]] && echo "-q$1") -1 <<EOF
 Home
-Phone
-111Piccadilly
 Other
 Reassociate
 EOF
