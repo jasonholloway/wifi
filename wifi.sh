@@ -78,7 +78,7 @@ EOF
 pickWifi() {
 		wpa_cli scan >/dev/null
 		sleep 2
-		wpa_cli scan_results |
+		wpa_cli all_bss |
 				tail -n+3 |
 				sort -k3 |
 				fzf
